@@ -53,7 +53,7 @@ class Keys(str, Enum):
     HEIGHT = "height"
     BBOX = "bbox"
     FILE_UPLOAD = "file_upload"
-    LICENSES = "licenses"
+    LICENSE = "licenses"
     DATE_CAPTURED = "date_captured"
 
 
@@ -136,7 +136,7 @@ class AnnotationMetadata:
                         data_dir=self.data_dir,
                         width=img[Keys.WIDTH],
                         height=img[Keys.HEIGHT],
-                        license=img.get(Keys.LICENSES, 1),
+                        licenses=img.get(Keys.LICENSE, 1),
                         date_captured=img.get(Keys.DATE_CAPTURED, ""),
                     ),
                     annotation_file=img[Keys.ANNOTATION_FILE],
@@ -355,7 +355,7 @@ class CocoImage:
     width: int
     height: int
     data_dir: StrPath
-    license: int = 1
+    licenses: int = 1
     date_captured: str = ""
     image: Optional[np.ndarray] = None
     annotations: List[SingleCocoAnnotation] = field(default_factory=list)
@@ -363,7 +363,7 @@ class CocoImage:
     def as_dict(self) -> dict:
         return {
             Keys.ID.value: self.id,
-            Keys.LICENSES.value: self.license,
+            Keys.LICENSE.value: self.licenses,
             Keys.FILE_NAME.value: self.file_name,
             Keys.WIDTH.value: self.width,
             Keys.HEIGHT.value: self.height,
@@ -447,7 +447,7 @@ class CocoAnnotation:
         self._data: Dict = self._load()
         self.name = self.path.name
         self.licenses: List[CocoLicense] = [
-            CocoLicense(**l) for l in self._data.get(Keys.LICENSES, [])
+            CocoLicense(**l) for l in self._data.get(Keys.LICENSE, [])
         ]
         self.categories: List[CocoCategory] = [
             CocoCategory(**c) for c in self._data.get(Keys.CATEGORIES, [])
@@ -481,7 +481,7 @@ class CocoAnnotation:
 
     def as_dict(self) -> Dict:
         return {
-            Keys.LICENSES.value: [l.__dict__ for l in self.licenses],
+            Keys.LICENSE.value: [l.__dict__ for l in self.licenses],
             Keys.CATEGORIES.value: [c.__dict__ for c in self.categories],
             Keys.ANNOTATIONS.value: [a.as_dict() for a in self.annotations],
             Keys.IMAGES.value: [i.as_dict() for i in self.images],
