@@ -1,0 +1,47 @@
+grounding_dino:
+  config_path: ../GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py
+  checkpoint_path: ./weights/groundingdino_swint_ogc.pth
+  box_threshold: 0.4
+  text_threshold: 0.25
+sam:
+  checkpoint_path: ./weights/sam_vit_h_4b8939.pth
+  encoder_version: vit_h
+logging_level: INFO # DEBUG, INFO, WARNING, ERROR, CRITICAL
+checkpoint_step: 100
+ontology:
+  key:
+    - "person"
+    # - "person"
+    # - "floor"
+    # - "chair"
+    # - "wheelchair"
+    # - "walker"
+    # - "table"
+  value:
+    # - "bed"
+    # - "person"
+    # - "floor"
+    # - "chair"
+    # - "wheelchair"
+    # - "support frame"
+    - "a human being"
+data:
+  image_dir: ./raw_data
+  image_extensions: [".jpg", ".png", ".jpeg"]
+annotations:
+  min_image_area_percentage: 0.002
+  max_image_area_percentage: 0.8
+  approximation_percentage: 0.75
+  root_path: ./dataset
+  coco_annotations_path: annotations/annotations.json
+  # export_annotations_path: export/export_annotations.json
+  # metadata_file: metadata.json
+  # label_studio_path: label_studio/label_studio.json
+  labels:
+    set: ["train", "val", "test"]
+    fall: ["fall", "non-fall"]
+# label_studio:
+#   base_url: http://localhost:8080
+#   project_id: 6
+#   page_size: 100
+#   file_uploads_cache_path: ./cache/file_uploads.json

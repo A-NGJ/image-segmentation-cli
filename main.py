@@ -5,12 +5,14 @@ import sys
 import warnings
 
 
-import annotation
 from collections_operations import check_strings_in_list
 from config import CONFIG
-import label_studio
 import oslib
-import segment
+from segmentation import (
+    annotation,
+    label_studio,
+    segment,
+)
 
 warnings.simplefilter(action="ignore", category=FutureWarning)
 warnings.simplefilter(action="ignore", category=UserWarning)
@@ -33,7 +35,7 @@ def main(args):
                 oslib.clean_path(CONFIG.annotations.label_studio_path.parent)
                 oslib.clean_path(CONFIG.annotations.coco_annotations_path.parent)
                 oslib.clean_path(CONFIG.annotations.metadata_path)
-        annotations_path = segment.run()
+        annotations_path = segment.run(CONFIG)
         if not annotations_path:
             logging.info("No new images to segment")
 
@@ -138,7 +140,7 @@ if __name__ == "__main__":
     export_to_label_studio_parser.add_argument(
         "--run-id",
         type=str,
-        help="Run UUID. If not sepcified, will be determined form the path to COCO annotations file",
+        help="Run UUID.",
     )
     args = parser.parse_args()
 

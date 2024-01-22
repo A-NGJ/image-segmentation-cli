@@ -102,7 +102,7 @@ class AnnotationMetadata:
         self,
         root_path: StrPath,
         metadata_filename: StrPath = "metadata.json",
-        coco_annotation_dir: StrPath = "coco/",
+        annotations_dir: StrPath = "annotations/",
         data_dir: StrPath = "data/",
         write_new: bool = False,
         empty: bool = False,
@@ -118,7 +118,7 @@ class AnnotationMetadata:
         self.categories = self._data.get(Keys.CATEGORIES, {})
         self.annotations = (
             self._load_coco_annotations(
-                self.root_path / coco_annotation_dir,
+                self.root_path / annotations_dir,
                 self._data[Keys.ANNOTATIONS],
             )
             if not empty
@@ -171,7 +171,7 @@ class AnnotationMetadata:
         return {
             Keys.LAST_INDEX.value: self.last_index,
             Keys.IMAGES.value: [img.as_dict() for img in self.images],
-            Keys.ANNOTATIONS.value: [a.name for a in self.annotations],
+            Keys.ANNOTATIONS.value: self.annotations,  # [a.name for a in self.annotations],
             Keys.CATEGORIES.value: self.categories,
         }
 
@@ -487,7 +487,9 @@ class CocoAnnotation:
             Keys.IMAGES.value: [i.as_dict() for i in self.images],
         }
 
-    def save(self):
+    def save(self, replace=False):
+        if replace and self.path.exists():
+            self.path.unlink()
         oslib.write_json(self.path, self.as_dict())
 
     def update_image_ids(self, start_id: int) -> int:

@@ -1,4 +1,3 @@
-import logging
 from PIL import Image
 import random
 from typing import (

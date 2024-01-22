@@ -104,25 +104,8 @@ class SegmentationDataset(Dataset):
 
         image = Image.fromarray(image_sum.astype("uint8"))
 
-        # ==== DEBUG save input image ====
-        # image.save("input.png")
-        # ==== END DEBUG ====
-
         if self.transforms:
             image = self.transforms(image)
-
-        # ==== DEBUG save transformed image ====
-        # mean = torch.tensor([0.485, 0.456, 0.406])
-        # std = torch.tensor([0.229, 0.224, 0.225])
-        # transformed_image = image * std[:, None, None] + mean[:, None, None]
-
-        # # Clip to ensure the values are between 0 and 1 (if it's a float tensor)
-        # transformed_image = transformed_image.clamp(0, 1)
-        # to_pil = transforms.ToPILImage()
-        # pil_image = to_pil(transformed_image)
-        # pil_image.save("output.png")
-        # raise Exception("stop")
-        # ==== END DEBUG ====
 
         label = image_meta.labels[self.target_label]
 
@@ -131,4 +114,3 @@ class SegmentationDataset(Dataset):
             self.metadata.map_label_int(self.target_label)[label],
             image_meta.coco_image.file_name,
         )
-

@@ -1,5 +1,6 @@
 from dataclasses import (
     dataclass,
+    field,
     is_dataclass,
 )
 import os
@@ -85,27 +86,25 @@ class AnnotationsConfig(PathPostInitMixin):
     min_image_area_percentage: float
     max_image_area_percentage: float
     approximation_percentage: float
-    # images_dir: Path
     coco_annotations_path: Path
-    export_annotations_path: Path
-    metadata_path: Path
-    label_studio_path: Path
-    labels: Dict
+    export_annotations_path: Path = ""
+    metadata_file: str = "metadata.json"
+    label_studio_path: Path = ""
+    labels: Dict = field(default_factory=dict)
 
     def __post_init__(self):
         super().__post_init__()
         self.coco_annotations_path = self.root_path / self.coco_annotations_path
         self.export_annotations_path = self.root_path / self.export_annotations_path
-        self.metadata_path = self.root_path / self.metadata_path
         self.label_studio_path = self.root_path / self.label_studio_path
 
 
 @dataclass
 class LabelStudioConfig(PathPostInitMixin):
-    base_url: str
-    project_id: int
-    page_size: int
-    file_uploads_cache_path: Path
+    base_url: str = ""
+    project_id: int = 0
+    page_size: int = 0
+    file_uploads_cache_path: Path = ""
     token: str = ""
 
 
@@ -117,8 +116,8 @@ class AppConfig:
     ontology: OntologyConfig
     data: DataConfig
     annotations: AnnotationsConfig
-    label_studio: LabelStudioConfig
-    checkpoint_step: int
+    label_studio: LabelStudioConfig = field(default_factory=LabelStudioConfig)
+    checkpoint_step: int = 100
     run_id: str = ""
 
     def __post_init__(self):
@@ -130,9 +129,6 @@ class AppConfig:
             raise FileNotFoundError(f"Config file not found: {yaml_path}")
         with open(yaml_path, "r") as f:
             return cls(**yaml.safe_load(f))
-
-    def validate(self):
-        pass  # TODO: validate config
 
 
 CONFIG_PATH_ENV = "FALL_DETECTION_CONTEXT_CONFIG_PATH"

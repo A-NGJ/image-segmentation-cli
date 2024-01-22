@@ -32,10 +32,10 @@ annotations:
   min_image_area_percentage: 0.002
   max_image_area_percentage: 0.8
   approximation_percentage: 0.75
-  root_path: ./annotations_kuleuven_train_fall
+  root_path: ./dataset
   coco_annotations_path: coco/annotations.json
   export_annotations_path: export/export_annotations.json
-  metadata_path: metadata.json
+  metadata_file: metadata.json
   label_studio_path: label_studio/label_studio.json
   labels:
     set: ["train", "val", "test"]
