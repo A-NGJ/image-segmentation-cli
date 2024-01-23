@@ -1,0 +1,33 @@
+grounding_dino: # REQUIRED FOR: segment
+  config_path: str # path do grounding DINO config
+  checkpoint_path: str # path to grounding DINO checkpoint
+  box_threshold: float # box threshold in range [0, 1], for details refer to grounding DINO documentation
+  text_threshold: float # text threshold in range [0, 1]
+sam: # REQUIRED FOR: segment
+  checkpoint_path: str 
+  encoder_version: str
+logging_level: str # OPTIONAL. Default: INFO, {DEBUG, INFO, WARNING, ERROR, CRITICAL}
+checkpoint_step: int # OPTIONAL. Default: 100, segmentation masks are saved every checkpoint step into a JSON file
+ontology: # REQUIRED FOR: segment
+  key: List[str] # keys are used as labels for detected objects, should be the same length as ontology.value
+  value: List[str] # values are used as prompts for grounding DINO to detect objects
+data: # REQUIRED FOR: segment
+  image_dir: str # path to raw data
+  image_extensions: List[str] # accept only specified file extensions
+annotations: # REQUIRED FOR: segment
+  min_image_area_percentage: float # In range [0, 1], skip masks which relative area is less than specified percentage
+  max_image_area_percentage: float # In range [0, 1], skip masks which relative area is greater than specified percentage
+  approximation_percentage: float # In range [0, 1], the percentage of polygon points to be removed from the input polygon. Useful for simplyfying annotations.
+  root_path: str # root path to annotated dataset
+  coco_annotations_path: str # path for storing COCO JSON annotations. The specified JSON file name will be appended with run id.
+  export_annotations_path: str # path for exported label studio annotations. REQUIRED FOR: parse-label-studio
+  metadata_file: str # OPTIONAL. Default: metadata.json
+  label_studio_path: str # path for exporting COCO JSON to label studio format. The specified JSON file name will be appended with run id. REQUIRED FOR: export-to-label-studio
+  labels: # used in segment mode. Save a key:value label if any of the parent directories is named with one of the values.
+    key1: ["label1_for_key1", "label2_for_key2"]
+    set: ["test", "train", "val"]
+label_studio: # REQUIRED FOR: export-to-label-studio
+  base_url: str # Label studio URL
+  project_id: int
+  page_size: int # page size in Label Studio API response
+  file_uploads_cache_path: str # path to JSON file that caches file uploads.
