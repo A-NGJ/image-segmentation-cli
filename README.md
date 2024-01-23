@@ -1,4 +1,6 @@
-# Segment anything with SAM + Grounding DINO
+# Segment anything with SAM + Grounding DINO + Label Studio
+
+![Segmentation pipeline](static/pipeline-inforgraphic.jpg)
 
 ## Table of contents
 
