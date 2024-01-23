@@ -161,3 +161,7 @@ cython_debug/
 
 weights/
 dataset/
+cache/
+
+# Mac OS
+.DS_Store

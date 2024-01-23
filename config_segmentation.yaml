@@ -36,12 +36,12 @@ annotations:
   coco_annotations_path: annotations/annotations.json
   # export_annotations_path: export/export_annotations.json
   # metadata_file: metadata.json
-  # label_studio_path: label_studio/label_studio.json
+  label_studio_path: label_studio/label_studio.json
   labels:
     set: ["train", "val", "test"]
     fall: ["fall", "non-fall"]
-# label_studio:
-#   base_url: http://localhost:8080
-#   project_id: 6
-#   page_size: 100
-#   file_uploads_cache_path: ./cache/file_uploads.json
+label_studio:
+  base_url: http://localhost:8080
+  project_id: 1
+  page_size: 100
+  file_uploads_cache_path: ./cache/file_uploads.json

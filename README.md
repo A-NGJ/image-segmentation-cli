@@ -6,11 +6,15 @@
 
 1. Install dependencies
 
+    First, install Grounding DINO. Follow their [tutorial](https://github.com/IDEA-Research/GroundingDINO).
+
+    Then install SAM. Follow official [tutorial](https://github.com/facebookresearch/segment-anything).
+
+    Install remaining dependencies:
+
     ```bash
     pip install -r requirements.txt
     ```
-
-    To install Grounding DINO, follow their [tutorial](https://github.com/IDEA-Research/GroundingDINO).
 
 2. Download SAM and GroundingDINO weights
 
@@ -83,6 +87,58 @@ If you run the segmentation script on new files, the `metadata.json` file will b
   # print object:color mapping
   print(metadata.colormap())
   ```
+
+## [Label Studio](https://labelstud.io/)
+
+### Segment anything in Label Studio
+
+Follow this [tutorial](https://labelstud.io/blog/get-started-using-segment-anything/) to set up machine learning backend with SAM in Label Studio. In order to integrate with the segmentation pipeline, Label Studio server must follow labeling configuration that is presented in the tutorial.
+
+> :bulb: NOTE: name of BrushLabels was changed from "tag" to "brush".
+
+```xml
+<View>
+  <Image name="image" value="$image" zoom="true"/>
+  <Header value="Brush Labels"/>
+  <BrushLabels name="brush" toName="image">
+  	<Label value="Dog" background="#FF0000"/>
+  	<Label value="Possum" background="#0d14d3"/>
+  </BrushLabels>
+  <Header value="Keypoint Labels"/>
+  <KeyPointLabels name="tag2" toName="image" smart="true">
+    <Label value="Dog" smart="true" background="#000000" showInline="true"/>
+    <Label value="Possum" smart="true" background="#000000" showInline="true"/>
+  </KeyPointLabels>
+  <Header value="Rectangle Labels"/>
+  <RectangleLabels name="tag3" toName="image" smart="true">
+    <Label value="Dog" background="#000000" showInline="true"/>
+    <Label value="Possum" background="#000000" showInline="true"/>
+  </RectangleLabels>
+</View>
+```
+
+Labels must be identical to keys specified in `ontology` section during segmentation phase.
+
+### Exporting annotations to Label Studio
+
+Label Studio uses a proprietary annotation format, hence a need to parse a COCO JSON to that format before annotations can be imported to the Label Studio server.
+
+1. Export environmental variables. See `.env.template`
+2. Prepare a configuration file.
+3. Upload images to Label Studio project.  
+  It is important to do that before running export script, otherwise file names will not match and annotations will not be imported correctly.
+4. Run export script.
+
+  ```bash
+  FALL_DETECTION_CONTEXT_CONFIG_PATH=config_export.yaml \
+  python main.py export-to-label-studio dataset/annotations/annotations-abc123.json
+  ```
+
+  Exported JSON will be created in `label_studio_path` with the same run id as the initial COCO JSON file, unless specified differently.
+
+5. Import annotations to Label Studio.
+
+### Import annotations from Label Studio
 
 ## Configuration file
 

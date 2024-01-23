@@ -61,5 +61,9 @@ def get_all_file_uploads(
 
         params["page"] += 1
 
-    oslib.write_json(CONFIG.label_studio.file_uploads_cache_path, file_uploads)
+    oslib.write_json(
+        CONFIG.label_studio.file_uploads_cache_path,
+        file_uploads,
+        create_parents=True,
+    )
     return file_uploads
