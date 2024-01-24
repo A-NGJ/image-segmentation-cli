@@ -4,30 +4,40 @@
 
 ## Table of contents
 
+<!-- TOC -->
+
 ## Quickstart
 
-1. Install dependencies
+### Step 1: Install dependencies
 
-    First, install Grounding DINO. Follow their [tutorial](https://github.com/IDEA-Research/GroundingDINO).
+#### Install Grounding DINO
 
-    Then install SAM. Follow official [tutorial](https://github.com/facebookresearch/segment-anything).
+Follow the tutorial provided by Grounding DINO to install necessary dependencies:  
+[Grounding DINO tutorial](https://github.com/IDEA-Research/GroundingDINO).
 
-    Install remaining dependencies:
+#### Install SAM
 
-    ```bash
-    pip install -r requirements.txt
-    ```
+Follow the official SAM tutorial for instalation:  
+[SAM tutorial](https://github.com/facebookresearch/segment-anything).
 
-2. Download SAM and GroundingDINO weights
+#### Install additional dependencies
 
-    * [SAM weights](https://github.com/facebookresearch/segment-anything#Model-checkpoints)
-    * [GroundingDINO weights](https://github.com/IDEA-Research/GroundingDINO)
+Install the remaining dependencies using pip:
 
-    Download the weights to a directory of your choice (`weights/` is a good default). If you choose a different name, remember to add it to `.gitignore`, because it is not recommended to upload large binary files to version control.
+```bash
+pip install -r requirements.txt
+```
 
-3. Specify YAML configuration
+### Step 2: Download model weights
 
-The following snippet is a minimal configuration that can be used to run segmentation. Use `config_segment_template.yaml` as a boilerplate. Detailed config information can be found in the [Config](#configuration-file) section.
+Download the model weights for SAM and Grounding DINO. Store them in a directory of your choice (e.g., `weights/`). Remember to update `.gitignore` if you choose a different directory name.
+
+* [SAM weights](https://github.com/facebookresearch/segment-anything#Model-checkpoints)
+* [GroundingDINO weights](https://github.com/IDEA-Research/GroundingDINO)
+
+### Step 3: Configure YAML file
+
+Create a configuration file based on the provided template `config_segment_template.yaml`. The following is a minimal configuration example. Detailed configuration information is available in the [Configuration File](#configuration-file) section.
 
 ```yaml
   grounding_dino:
@@ -57,46 +67,48 @@ The following snippet is a minimal configuration that can be used to run segment
       set: ["train", "val", "test"]
   ```
 
-4. Run segmentation
+### Step 4: Running segmentation
 
-  ```bash
-  python main.py segment
-  ```
+Run the segmentation process using the following command:
 
-5. Check your root dataset directory.
+```bash
+python main.py segment
+```
 
-There should be `metadata.json` file present together with `annotations` directory containing segmentation masks in [COCO JSON](https://cocodataset.org/#format-data) files.
+### Step 5: Verify output
 
-6. Segment more files
+Check your root dataset directory for the `metadata.json` file and the `annnotations` directory, which should contain segmentation masks in COCO JSON format.
 
-If you run the segmentation script on new files, the `metadata.json` file will be updated and new annotations will appear in the annotations directory. If you wish to clean annotations beforehand, use `-c` or `--clean` option.
+### Step 6: Segment additional files
 
-7. Verify segmentation masks
+To segment new files, simply run the segmentation script again. Use `-c` or `--clean` option to clean annotations if needed.
 
-  This script will display all masks that were segmented on the first image and their color mapping.
+### Verify segmentation masks
 
-  ```python
-  import matplotlib.pyplot as plt
-  from segmentation.annotation import AnnotationMetadata
+Use the following script to display segmentation masks and their color mapping for the first image:
 
-  metadata = AnnotationMetadata("./dataset", data_dir="raw_data/")
-  sample_image = metadata.images[0]
+```python
+import matplotlib.pyplot as plt
+from segmentation.annotation import AnnotationMetadata
 
-  masked_image = sample_image.coco_image.draw_masks()
-  plt.imshow(masked_image)
-  plt.show()
+metadata = AnnotationMetadata("./dataset", data_dir="raw_data/")
+sample_image = metadata.images[0]
 
-  # print object:color mapping
-  print(metadata.colormap())
-  ```
+masked_image = sample_image.coco_image.draw_masks()
+plt.imshow(masked_image)
+plt.show()
 
-## [Label Studio](https://labelstud.io/)
+# print object:color mapping
+print(metadata.colormap())
+```
+
+## [Label Studio](https://labelstud.io/) Integration
 
 ### Segment anything in Label Studio
 
-Follow this [tutorial](https://labelstud.io/blog/get-started-using-segment-anything/) to set up machine learning backend with SAM in Label Studio. In order to integrate with the segmentation pipeline, Label Studio server must follow labeling configuration that is presented in the tutorial.
+To integrate SAM with Label Studio for image segmentation, follow this comprehensive [tutorial](https://labelstud.io/blog/get-started-using-segment-anything/). Ensure that the Label Studio server is configured according to the labeling setup described in the tutorial.
 
-> :bulb: NOTE: name of BrushLabels was changed from "tag" to "brush".
+> :bulb: NOTE: The BrushLabels tag name has been updated from "tag" to "brush" in the labeling configuration.
 
 ```xml
 <View>
@@ -119,29 +131,137 @@ Follow this [tutorial](https://labelstud.io/blog/get-started-using-segment-anyth
 </View>
 ```
 
-Labels must be identical to keys specified in `ontology` section during segmentation phase.
+Ensure that labels correspond to the keys specified in the `ontology`` section of the segmentation phase.
 
 ### Exporting annotations to Label Studio
 
-Label Studio uses a proprietary annotation format, hence a need to parse a COCO JSON to that format before annotations can be imported to the Label Studio server.
+Label Studio uses a proprietary annotation format. Follow these steps to convert COCO JSON annotations for import into Label Studio:
 
-1. Export environmental variables. See `.env.template`
-2. Prepare a configuration file.
-3. Upload images to Label Studio project.  
-  It is important to do that before running export script, otherwise file names will not match and annotations will not be imported correctly.
+1. Set environmental variables as per the `.env.template`.
+2. Create a configuration file for the export process.
+3. Upload images to Label Studio project first to ensure matching file names with the exported annotations
 4. Run export script.
 
-  ```bash
-  FALL_DETECTION_CONTEXT_CONFIG_PATH=config_export.yaml \
-  python main.py export-to-label-studio dataset/annotations/annotations-abc123.json
-  ```
+    ```bash
+    IMAGE_SEGMENTATION_CONFIG_PATH=config_export.yaml \
+    python main.py export-to-label-studio dataset/annotations/annotations-abc123.json
+    ```
 
-  Exported JSON will be created in `label_studio_path` with the same run id as the initial COCO JSON file, unless specified differently.
+    The exported JSON will be saved in the `label_studio_path`` directory, maintaining the same run ID as the original COCO JSON file unless specified otherwise.
 
 5. Import annotations to Label Studio.
 
 ### Import annotations from Label Studio
 
+To import modified annotations back into the COCO JSON format.
+
+1. In Label Studio, navigate to the project tab and export annotations as JSON.
+
+2. Save exported project file in a dataset directory, e.g., `label_studio_export`.
+
+3. Update `annotations.export_annotations_path` in the configuration file, e.g., set path to `export/annotations.json`
+
+4. Run parse Label Studio script.
+
+    > :bubl: NOTE: It is recommended to use the same `run_id` as the initial COCO JSON annotations (before being modified in Label Studio). This way, parsed annotation file will have the same name as the initial one, yet will be located in a different directory. Then it is enough to replace `annotations_dir` when initializing `AnnotationMetadata` to use updated labels. 
+
+    ```bash
+    FALL_DETECTION_CONTEXT_CONFIG_PATH=config_parse.yaml \
+    python main.py parse-label-studio dataset/label_studio_export/project-1.json --coco-path dataset/annotations/annotations-abc123.json --run-id abc123
+    ```
+
+5. Imported annotations will be available in the `annotations.export_annotations_path` directory.
+
+## CLI
+
+To use the tool, run the script with desired mode and corresponding arguments. The script supports three modes of operation: `segment`, `parse-label-studio`, and `export-to-label-studio`. The tool uses a [configuration file](#configuration-file) for various settings. It is possible to speify a configuration file through [environmental variables](#environmental-variables).
+
+### Command syntax
+
+```bash
+python main.py <mode> [options]
+```
+
+### Modes
+
+1. Segment mode
+
+    Segment mode is used for segmenting images and managing annotations.
+
+    **Command**:
+
+    ```bash
+    python main.py segment [options]
+    ```
+
+    **Options**:
+
+    * `-c`, `--clean`: Clean old annotations and metadata. This action is irreversible.
+
+2. Parse Label Studio mode
+
+    This mode is for parsing exported Label Studio annotations.
+
+    **Command**:
+
+    ```bash
+    python main.py parse-label-studio <file> [options]
+    ```
+
+    **Arguments**:
+
+    * `file`: Path to the exported Label Studio annotations file.
+
+    **Options**:
+
+    * `--coco-path <path>`: Path to the COCO annotations file for retrieving additional imformation about annotations.
+
+    * `--run-id <id>`: Specify a run UUID. It is recommended to use the same UUID as the COCO annotations file has.
+
+3. Export to Label Studio mode
+
+    This mode is for exporting annotations to the Label Studio format.
+
+    **Command**:
+
+    ```bash
+    python main.py export-to-label-studio <coco_annotations_path> [options]
+    ```
+
+    **Arguments**:
+
+    * `coco_annotations_path`: Path to the COCO annotations file to be exported.
+
+    **Options**:
+
+    * `--run-id <id>`: Specify UUID.
+
+### Examples
+
+#### Segmenting Images
+
+```bash
+python main.py segment --clean
+```
+
 ## Configuration file
 
 `config_schema.yaml` file contains detailed information about all available parameters for configuration file.
+
+## Environmental variables
+
+### `LABEL_STUDIO_TOKEN`
+
+Token used for authenticating with Label Studio. This token is necessary for operations that require communication with the Label Studio server, such as exporting and importing annotations.
+
+**Required**: Yes (for operations interacting with Label Studio).
+
+**Default value**: None (must be provided by te user).
+
+### `IMAGE_SEGMENTATION_CONFIG_PATH`
+
+Path to the configuration file for the CLI tool. This file contains various settings that the tool uses, such as paths for annotations, logging configurations, and other operational parameters.
+
+**Required**: No (Specify to change the default configuration file)
+
+**Default value**: `config.yaml`

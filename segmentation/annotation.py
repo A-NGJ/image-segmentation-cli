@@ -828,7 +828,7 @@ class LabelStudioAnnotationCollection:
             raise ValueError("Metadata is not set")
 
         coco_dict = self.to_coco_dict(self.metadata.categories, coco_annotations)
-        oslib.write_json(path, coco_dict)
+        oslib.write_json(path, coco_dict, create_parents=True)
 
     @classmethod
     def from_json(cls, path: Path):
