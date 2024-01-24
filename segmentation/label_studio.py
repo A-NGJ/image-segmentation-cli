@@ -10,7 +10,7 @@ from label_studio_converter.brush import (
 import numpy as np
 import requests
 
-from config import CONFIG
+from config.config import CONFIG
 import oslib
 
 MASK_SCALING_FACTOR = 255

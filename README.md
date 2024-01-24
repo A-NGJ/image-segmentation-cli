@@ -4,7 +4,13 @@
 
 ## Table of contents
 
-<!-- TOC -->
+1. [Quickstart](#quickstart)
+2. [Label Studio Integration](#label-studio-integration)
+3. [CLI](#cli)
+4. [Configuration File](#configuration-file)
+5. [Environmental Variables](#environmental-variables)
+6. [Fall dataset](#fall-dataset)
+7. [Dataset Python API](#dataset-python-api)
 
 ## Quickstart
 
@@ -236,7 +242,7 @@ python main.py <mode> [options]
 
     * `--run-id <id>`: Specify UUID.
 
-### Examples
+### CLI Examples
 
 #### Segmenting Images
 
@@ -266,7 +272,37 @@ Path to the configuration file for the CLI tool. This file contains various sett
 
 **Default value**: `config.yaml`
 
+## Fall dataset
+
+We release a fall dataset that was annotated using our image segmentation CLI. It consists of frames extracted from public fall datasets: [KULeuven](https://iiw.kuleuven.be/onderzoek/advise/datasets#High%20Quality%20Fall%20Simulation%20Data) [1], [UR Fall](http://fenix.ur.edu.pl/~mkepski/ds/uf.html) [2], and [CAUCAFall](https://data.mendeley.com/datasets/7w7fccy7ky/4) [3].
+
+:arrow_down: The dataset is available [here](). :arrow_down:
+
+| Name      | No. falls | % Falls | No. non-falls | % Non-falls | Total | % Total |
+|-----------|-----------|---------|---------------|-------------|-------|---------|
+| CAUCAFall | 1,538     | 67      | 1,575         | 41          | 3,113 | 51      |
+| KULeuven  | 713       | 31      | 1,950         | 51          | 2,663 | 44      |
+| URFall    | 42        | 2       | 275           | 8           | 317   | 5       |
+| **Total** | **2,293** | **100** | **3,800**     | **100**     | **6,093** | **100** |
+
+*Table: Comparative analysis of fall and non-fall data across subsets of the merged dataset. The table presents the number of fall (No. falls) and non-fall (No. non-falls) instances along with their respective percentage shares (% Falls and % Non-falls) for each dataset. "Total" columns refer to the combined count of fall and non-fall instances, whilst "Total" row refers to the sum of a respective column.*
+
+
+[1] Greet Baldewijns et al. “Bridging the gap between reallife data and simulated data
+by providing a highly realistic fall dataset for evaluating camerabased fall detection
+algorithms”. In: Healthcare Technology Letters 3.1 (2016), pp. 6–11. DOI: 10.1049/
+htl.2015.0047.
+
+[2] Bogdan Kwolek and Michal Kepski. “Human fall detection on embedded platform
+using depth maps and wireless accelerometer”. In: Computer Methods and Pro
+grams in Biomedicine 117.3 (Dec. 2014), pp. 489–501. ISSN: 01692607.
+
+[3] Jose Camilo Eraso et al. Dataset CAUCAFall. Version V4. 2022. DOI: 10.17632/
+7w7fccy7ky.4.
+
 ## Dataset Python API
+
+For detailed documentation, visit the Wiki Page.
 
 ### Overview
 
@@ -284,9 +320,116 @@ Initialization
 from annotation import AnnotationMetadata
 
 dataset_path = "/path/to/dataset"
-metadata = AnnotationMetadata(dataset_path, metadata_filename="metadata.json")
+metadata = AnnotationMetadata(dataset_path)
 ```
 
 Key Methods
 
-*  
+* `filter_images`: Filters images based on specific criteria.
+
+    Criteria uses class attributes as dictionary keys, and filter function as values.
+    A filter returns all images for which a filter function returns true. For instance, in the first example all images which `coco_image.file_name` attribute is equal to `img_name` are returned, effectively retrieving one specific image.
+
+    ```python
+    img_name = "img1.png"
+    sample_img = metadata.filter_images(
+        {"coco_image.file_name": lambda x: x == img_name}
+    )[0]
+
+    # Filter images by label(s)
+    fall_images = metadata.filter_images({
+        "labels.fall": lambda x: x == "fall",
+        "labels.set": lambda x: x == "train",
+    })
+    ```
+
+* `to_json`: Saves updated metadata to a JSON file.
+
+  ```python
+  metadata.to_json("updated_metadata.json")
+  ```
+
+* `remove_images`: Remove images that match supplied filters. Filters are defined the same way as in `filter_images` method.
+* `merge`: Merge two annotation metadata files.
+* `get_filenames`: Returns names of images in the dataset.
+* `get_img_index`: Get indices of filenames of segmented images from a metadata file.
+* `get_labels`: Get dictionary of labels for each image, where key is the image file name.
+
+Key attributes
+
+* `images` List[AnnotationMetaImage]: List of annotations of all images in the dataset.
+* `image_labels`: Dict[str, List[str]]: A dictionary of each label key and its possible valyes.
+* `categories`: Dict[str, int]: A dictionary of <category_name>:<category_id> pairs.
+
+#### `AnnotationMetaImage`
+
+The class representes metadata for a single image in the dataset, including its annotations.
+
+Usage
+
+```python
+annotation_meta_image = metadata.images[0]
+```
+
+Key attrbiutes
+
+* `annotation_file`: str: A name of the metadata annotation file.
+* `coco_image`: CocoImage: COCO-style annotated image.
+* `labels`: Dict[str, str]: Image labels (excluding segmentation masks)
+
+#### `CocoImage`
+
+Handles operations specific to COCO-style annotated images.
+
+Key Methods
+
+* `mask_objects`: Apply transformation to chosen objects in an image
+* `draw_masks`: Draws all annotation masks on the image.
+
+    ```python
+    import matplotlib.pyplot as plt
+
+    masked_image = annotation_meta_image.coco_image.draw_masks()
+    plt.imshow()
+    plt.show()
+    ```
+
+* `get_bbox`: Get bounding box coordinates for a given annotation.
+
+Key attributes
+
+* `file_name`: str: Image file name.
+* `width`: int: Image width.
+* `height`: int: Image height.
+* `image`: numpy.ndarray: Binary image
+* `annotations`: List[SingleCocoAnnotation]: Annotations containing bounding boxes and segmentation masks of detected objects in the image.
+
+#### `SingleCocoAnnotation`
+
+Key attributes
+
+* `rle`: List[int]: Run Length Encoding mask.
+* `bbox`: List[int]: Bounding box coordinates.
+* `category_id`: int
+* `category`: CocoCategory: object containing category id and name
+
+### API Examples
+
+#### Moving image between sets
+
+```python
+# Move images to a different set (e.g., from training to test set)
+for img in fall_images:
+    img.labels["set"] = "test"
+```
+
+#### Filtering by annotation
+
+```python
+# Filter images containing a specific annotation
+wheelchair_images = metadata.filter_images({
+    "coco_image.annotations": lambda annotations: "wheelchair" in 
+    [a.category.name for a in annotations]
+})
+
+```
