@@ -1,0 +1,14 @@
+numpy
+opencv-python
+Pillow
+torch
+torchvision
+matplotlib
+requests
+tqdm
+PyYAML
+scipy
+supervision==0.17.1
+label-studio-converter==0.0.57
+groundingdino @ git+https://github.com/IDEA-Research/GroundingDINO.git#egg=groundingdino
+segment-anything @ git+https://github.com/your-repo/segment-anything.git#egg=segment-anything
