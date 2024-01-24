@@ -11,6 +11,10 @@
 5. [Environmental Variables](#environmental-variables)
 6. [Fall dataset](#fall-dataset)
 7. [Dataset Python API](#dataset-python-api)
+    - [Classes](#classes)
+    - [API examples](#api-examples)
+    - [Transformations](#transformations)
+    - [Pytorch dataset](#pytorch-dataset)
 
 ## Quickstart
 
