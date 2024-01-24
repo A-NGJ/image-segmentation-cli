@@ -431,3 +431,59 @@ wheelchair_images = metadata.filter_images({
 })
 
 ```
+
+### Transformations
+
+The `segmentation/transformations.py` module contains transformations that can be directly applied on segmented objects.
+
+Available transformations:
+
+#### `DummyTransformation()`
+
+An identity transformation that makes no changes to the object. Useful when no transformation is desired (at least one transformation is always required).
+
+#### `BlurTransformation(kernel_size=15, inverse=False, probability=1)`
+
+Apply Gaussian blur with chosen kernel size and probability.
+
+**Parameters**
+
+* `kernel_size`: The size of the Gaussian kernel. Default is 15.
+* `inverse`: If `True`, applies the transformation to the area outside the segmented object. Default is`False`.
+* `probability`: The probability of applying the transformation. Default is 1.
+
+#### `SolidColorTransformation(color=(0, 0, 0), inverse=False)`
+
+Change pixel color to a solid color defined in as RGB values.
+
+**Parameters**
+
+* `color`: : A tuple representing the RGB values of the desired color. Default is (0, 0, 0) (black).
+* `inverse`: If `True`, applies the transformation to the area outside the segmented object. Default is `False`.
+
+#### `TorchTransformation(transformation, inverse=False, **kwargs)`
+
+Apply a transformation from `torchvision` package. Currently available: `RandAugment`, `AutoAugment`, `ColorJitter`, `GrayScale`.
+
+**Parameters**
+
+* `transformation`: The torchvision transformation to apply (e.g., `RandAugment`, `AutoAugment`, `ColorJitter`, `GrayScale`).
+* `inverse`: If `True`, applies the transformation to the area outside the segmented object. Default is `False`.
+* `kwargs`: Additional keyword arguments specific to the chosen torchvision transformation.
+
+You can define any transformation as long as it implements base `Transformation`.
+
+The following example demonstrates how to apply a blur transformation to the inverse of a segmented object labeled as "person" and then display the modified image:
+
+```python
+from segmentation.transformation import BlurTransformation
+
+masked_image, mask = image.coco_image.mask_objects(
+  ["person"], mask_transformation=BlurTransformation(inverse=True),
+)
+
+plt.imshow(masked_image)
+plt.show()
+```
+
+### 
