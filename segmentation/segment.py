@@ -15,7 +15,7 @@ from tqdm import tqdm
 
 from segmentation import annotation
 from segmentation.supervision_overwrite import DetectionDatasetRLE
-from config import CONFIG
+from config.config import CONFIG
 import oslib
 
 

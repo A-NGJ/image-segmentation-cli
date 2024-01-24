@@ -48,12 +48,6 @@ class PathPostInitMixin:
         self.path_post_init()
 
 
-# def expandpath(path: Path) -> Path:
-#     if path.is_absolute():
-#         return path
-#     return ROOT / path
-
-
 @dataclass
 class GroundingDinoConfig(PathPostInitMixin):
     config_path: Path

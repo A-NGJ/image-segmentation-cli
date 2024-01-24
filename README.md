@@ -163,7 +163,7 @@ To import modified annotations back into the COCO JSON format.
 
 4. Run parse Label Studio script.
 
-    > :bubl: NOTE: It is recommended to use the same `run_id` as the initial COCO JSON annotations (before being modified in Label Studio). This way, parsed annotation file will have the same name as the initial one, yet will be located in a different directory. Then it is enough to replace `annotations_dir` when initializing `AnnotationMetadata` to use updated labels. 
+    > :bulb: NOTE: It is recommended to use the same `run_id` as the initial COCO JSON annotations (before being modified in Label Studio). This way, parsed annotation file will have the same name as the initial one, yet will be located in a different directory. Then it is enough to replace `annotations_dir` when initializing `AnnotationMetadata` to use updated labels. 
 
     ```bash
     FALL_DETECTION_CONTEXT_CONFIG_PATH=config_parse.yaml \
@@ -265,3 +265,28 @@ Path to the configuration file for the CLI tool. This file contains various sett
 **Required**: No (Specify to change the default configuration file)
 
 **Default value**: `config.yaml`
+
+## Dataset Python API
+
+### Overview
+
+The `AnnotationMetadata` class and its descendants in the `annotation.py` file provide a comprehensive API for managing and manipulating image annoations within a [dataset](). This documentation covers the key functionalities of these classes.
+
+### Classes
+
+#### `AnnotationMetadata`
+
+The `AnnotationMetadata` class represents the metadata of a dataset, including images and their annotations.
+
+Initialization
+
+```python
+from annotation import AnnotationMetadata
+
+dataset_path = "/path/to/dataset"
+metadata = AnnotationMetadata(dataset_path, metadata_filename="metadata.json")
+```
+
+Key Methods
+
+*  

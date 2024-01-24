@@ -6,7 +6,7 @@ import warnings
 
 
 from collections_operations import check_strings_in_list
-from config import CONFIG
+from config.config import CONFIG
 import oslib
 from segmentation import (
     annotation,
