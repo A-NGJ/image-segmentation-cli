@@ -9,7 +9,6 @@ from segment_anything import (
     sam_model_registry,
 )
 
-# import supervision as sv
 import torch
 from tqdm import tqdm
 

@@ -1,4 +1,3 @@
-from PIL import Image
 import random
 from typing import (
     Protocol,
@@ -8,6 +7,7 @@ from typing import (
 
 import cv2
 import numpy as np
+from PIL import Image
 
 from torchvision import transforms
 
@@ -63,81 +63,6 @@ class SolidColorTransformation:
         if self.inverse:
             mask = ~mask
         return np.where(mask[:, :, None], self.color, image), mask
-
-
-# class GrayscaleTransformation:
-#     def __init__(self, inverse=False):
-#         self.inverse = inverse
-#         self.transform = transforms.Grayscale(3)
-
-#     def __call__(self, image: Union[np.ndarray, Image.Image], mask):
-#         if self.inverse:
-#             mask = ~mask
-
-#         if not isinstance(image, Image.Image):
-#             image = Image.fromarray(image.astype("uint8"))
-
-#         # Calculate grayscale using luminosity method
-#         # grayscale = np.dot(image[..., :3], [0.21, 0.72, 0.07])
-
-#         return (
-#             np.where(
-#                 mask[:, :, None], np.array(self.transform(image)), np.array(image)
-#             ),
-#             mask,
-#         )
-
-
-# class ColorJitterTransformation:
-#     def __init__(
-#         self,
-#         brightness=0.2,
-#         contrast=0.2,
-#         saturation=0.2,
-#         hue=0.1,
-#         inverse=False,
-#     ):
-#         self.inverse = inverse
-#         self.transform = transforms.ColorJitter(
-#             brightness=brightness,
-#             contrast=contrast,
-#             saturation=saturation,
-#             hue=hue,
-#         )
-
-#     def __call__(self, image: Union[np.ndarray, Image.Image], mask):
-#         if self.inverse:
-#             mask = ~mask
-
-#         if not isinstance(image, Image.Image):
-#             image = Image.fromarray(image.astype("uint8"))
-
-#         return (
-#             np.where(
-#                 mask[:, :, None], np.array(self.transform(image)), np.array(image)
-#             ),
-#             mask,
-#         )
-
-
-# class RandomTransformation:
-#     def __init__(self, inverse=False):
-#         self.inverse = inverse
-#         self.transform = transforms.RandAugment()
-
-#     def __call__(self, image: Union[np.ndarray, Image.Image], mask):
-#         if self.inverse:
-#             mask = ~mask
-
-#         if not isinstance(image, Image.Image):
-#             image = Image.fromarray(image.astype("uint8"))
-
-#         return (
-#             np.where(
-#                 mask[:, :, None], np.array(self.transform(image)), np.array(image)
-#             ),
-#             mask,
-#         )
 
 
 class TorchTransformation:

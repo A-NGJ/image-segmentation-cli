@@ -517,23 +517,6 @@ class CocoAnnotation:
     def get_annotations(self, img_id: int) -> List[SingleCocoAnnotation]:
         return [a for a in self.annotations if a.image_id == img_id]
 
-    # def get_bbox(self, annot_id: int, image_id: int) -> list:
-    #     """
-    #     Get bbox coordinates for a given image and category id.
-
-    #     :param image_id: image id
-    #     :param category_id: category id
-    #     :return: bbox coordinates in format [x, y, width, height]
-    #     """
-
-    #     for annot in self.data[Keys.ANNOTATIONS]:
-    #         if annot[Keys.ID] == annot_id and annot[Keys.IMAGE_ID] == image_id:
-    #             return annot[Keys.BBOX]
-    #     logging.warning(
-    #         f"Bounding box not found for annotation {annot_id} on image {image_id}."
-    #     )
-    #     return []
-
     def get_img_index(self) -> Dict[str, int]:
         """
         Get indices of filenames of segmented images from a coco annotations file.
@@ -587,7 +570,6 @@ class LabelStudioAnnotation:
     DEFAULT_ORIGIN = "manual"
 
     def __init__(self, **kwargs):
-        # required_keys = ["id", "image", "width", "height"]
         required_keys = [
             Keys.ID.value,
             Keys.IMAGE.value,

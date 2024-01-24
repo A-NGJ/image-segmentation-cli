@@ -13,7 +13,6 @@ import torch
 
 from segmentation.annotation import AnnotationMetadata, LABEL_FALL
 
-# from custom_types import StrPath
 from segmentation.transformations import (
     Transformation,
     DummyTransformation,
