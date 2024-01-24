@@ -486,4 +486,49 @@ plt.imshow(masked_image)
 plt.show()
 ```
 
-### 
+### Pytorch Dataset
+
+The `SegmentationDataset` class from the `segmentation/data.py` module is a custom PyTorch Dataset implementation for image segmentation tasks, fully compatible with `AnnotationMetadata`. It integrates efficiently with PyTorch's data handling and allows for the application of complex image transformations on segmented objects.
+
+Initialization
+
+```python
+from segmentation import SegmentationDataset, DummyTransformation
+from segmentation.annotation import AnnotationMetadata
+
+dataset = SegmentationDataset(
+    metadata=AnnotationMetadata("/path/to/dataset"),
+    segmentation_transforms=[DummyTransformation()],
+    objects=[["person"]],
+    transforms=None,  # Optional standard PyTorch transforms that are applied after segmentation transforms
+    target_label="your_target_label"
+)
+```
+
+**Parameters**
+
+* `metadata`: `AnnotationMetadata`: An instance of `AnnotationMetadata` containing dataset annotations.
+* `segmentation_transforms`: Sequence[Transformation]: A sequence of segmentation transformations to be applied.
+* `objects`: Sequence[Sequence[str]]: A sequence of object groups. Each group corresponds to a transformation in segmentation_transforms.
+* `transforms`: Optional[Callable]: Standard PyTorch transformations to be applied to the entire image.
+* `target_label`: str: The label of interest from the metadata.
+
+**Usage example**
+
+The following example demonstrates how to use the SegmentationDataset with a simple transformation and PyTorch's DataLoader:
+
+```python
+from torch.utils.data import DataLoader
+from segmentation.transformations import BlurTransformation
+
+# Initialize the dataset
+dataset = SegmentationDataset(...)
+
+# Create a DataLoader
+data_loader = DataLoader(dataset, batch_size=4, shuffle=True)
+
+# Iterate over the DataLoader
+for images, labels, file_names in data_loader:
+    # Process images and labels
+    pass
+```
