@@ -302,11 +302,9 @@ grams in Biomedicine 117.3 (Dec. 2014), pp. 489–501. ISSN: 01692607.
 
 ## Dataset Python API
 
-For detailed documentation, visit the Wiki Page.
-
 ### Overview
 
-The `AnnotationMetadata` class and its descendants in the `annotation.py` file provide a comprehensive API for managing and manipulating image annoations within a [dataset](). This documentation covers the key functionalities of these classes.
+The `AnnotationMetadata` class and its descendants in the `annotation.py` file provide a comprehensive API for accessing and managing image annoations. This documentation covers the key functionalities of these classes.
 
 ### Classes
 
