@@ -396,7 +396,9 @@ class CocoImage:
 
     def draw_masks(self, cmap: str = "tab10") -> np.ndarray:
         colormap = get_cmap(cmap, 10)
-        image = self.load_image()
+        image = self.image
+        if self.image is None:
+            image = self.load_image()
         for annot in self.annotations:
             try:
                 mask = rle2mask(annot.rle, (self.height, self.width))
@@ -413,7 +415,9 @@ class CocoImage:
         mask_transformation: Transformation = SolidColorTransformation(),
         raise_if_empty: bool = False,
     ) -> Tuple[np.ndarray, np.ndarray]:
-        image = self.load_image()
+        image = self.image
+        if image is None:
+            image = self.load_image()
 
         mask_combined = np.zeros((self.height, self.width), dtype=bool)
 

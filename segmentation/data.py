@@ -76,6 +76,9 @@ class SegmentationDataset(Dataset):
 
     def __getitem__(self, idx):
         image_meta = self.metadata.images[idx]
+        if image_meta.coco_image.image is None:
+            image_meta.coco_image.load_image()
+
         if self.image_size is not None:
             image_meta.coco_image.resize(self.image_size)
 
