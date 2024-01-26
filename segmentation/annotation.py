@@ -337,6 +337,14 @@ class SingleCocoAnnotation:
     category: CocoCategory
     rle: List[int]
     bbox: List[int]
+    rle_width: int = 0
+    rle_height: int = 0
+    mask: Optional[np.ndarray] = None
+
+    def init_mask(self) -> np.ndarray:
+        self.mask = rle2mask(self.rle, (self.rle_height, self.rle_width))
+
+        return self.mask
 
     def as_dict(self) -> Dict:
         return {
@@ -359,6 +367,11 @@ class CocoImage:
     date_captured: str = ""
     image: Optional[np.ndarray] = None
     annotations: List[SingleCocoAnnotation] = field(default_factory=list)
+
+    def __post_init__(self):
+        for annot in self.annotations:
+            annot.rle_width = self.width
+            annot.rle_height = self.height
 
     def as_dict(self) -> dict:
         return {
@@ -401,6 +414,7 @@ class CocoImage:
         raise_if_empty: bool = False,
     ) -> Tuple[np.ndarray, np.ndarray]:
         image = self.load_image()
+
         mask_combined = np.zeros((self.height, self.width), dtype=bool)
 
         if not objects:
@@ -408,8 +422,11 @@ class CocoImage:
 
         for annot in self.annotations:
             if annot.category.name in objects:
-                mask = rle2mask(annot.rle, (self.height, self.width))
-                mask_combined |= mask
+                mask = annot.init_mask()
+                mask = cv2.resize(
+                    (mask * 255).astype(np.uint8), (self.width, self.height)
+                )
+                mask_combined |= mask.astype(bool)
 
         if not mask_combined.any():
             warning_message = (
@@ -421,7 +438,10 @@ class CocoImage:
                 )
             logging.debug(warning_message)
 
-        return mask_transformation(image, mask_combined)
+        return mask_transformation(
+            cv2.resize(image, (self.width, self.height)),
+            mask_combined,
+        )
 
     def get_bbox(self, annot_id: int) -> list:
         """
@@ -436,6 +456,11 @@ class CocoImage:
             if annot.id == annot_id:
                 return annot.bbox
         return []
+
+    def resize(self, size: Tuple[int, int]) -> np.ndarray:
+        self.width, self.height = size
+
+        return cv2.resize(self.image, size)
 
 
 class CocoAnnotation:

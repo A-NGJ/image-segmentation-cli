@@ -57,6 +57,7 @@ class SegmentationDataset(Dataset):
         objects: Sequence[Sequence[str]] = (),
         transforms: Optional[Callable] = None,
         target_label: str = LABEL_FALL,
+        image_size: Optional[Tuple[int, int]] = None,
     ):
         if len(segmentation_transforms) != len(objects):
             raise ValueError(
@@ -68,12 +69,16 @@ class SegmentationDataset(Dataset):
         self.transforms = transforms
         self.objects = objects
         self.target_label = target_label
+        self.image_size = image_size
 
     def __len__(self):
         return len(self.metadata.images)
 
     def __getitem__(self, idx):
         image_meta = self.metadata.images[idx]
+        if self.image_size is not None:
+            image_meta.coco_image.resize(self.image_size)
+
         image_sum = None
 
         for segmentation_transform, objects in zip(
