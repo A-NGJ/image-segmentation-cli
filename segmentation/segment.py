@@ -12,6 +12,7 @@ from segment_anything import (
 import torch
 from tqdm import tqdm
 
+from errors import ModelLoadingError
 from segmentation import annotation
 from segmentation.supervision_overwrite import DetectionDatasetRLE
 from config.config import CONFIG
@@ -107,11 +108,14 @@ def run(config) -> int:
     if len(img_paths) == 0:
         return 0
 
-    grounding_dino_model = Model(
-        model_config_path=str(config.grounding_dino.config_path),
-        model_checkpoint_path=str(config.grounding_dino.checkpoint_path),
-        device=device,
-    )
+    try:
+        grounding_dino_model = Model(
+            model_config_path=str(config.grounding_dino.config_path),
+            model_checkpoint_path=str(config.grounding_dino.checkpoint_path),
+            device=device,
+        )
+    except FileNotFoundError as e:
+        raise ModelLoadingError(f"Grounding Dino model not loaded: {e}")
 
     sam = sam_model_registry[config.sam.encoder_version](
         checkpoint=config.sam.checkpoint_path,

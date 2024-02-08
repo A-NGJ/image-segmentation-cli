@@ -20,6 +20,7 @@ annotations:
   max_image_area_percentage: 0.8
   approximation_percentage: 0.75
   root_path: ./dataset
-  annotations_path: annotations/annotations.json
+  coco_annotations_path: annotations/annotations.json
   labels:
     set: ["train", "val", "test"]
+logging_level: INFO

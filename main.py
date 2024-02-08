@@ -4,9 +4,18 @@ from pathlib import Path
 import sys
 import warnings
 
+from errors import (
+    ConfigLoadingError,
+    ModelLoadingError,
+)
 
 from collections_operations import check_strings_in_list
-from config.config import CONFIG
+try:
+    from config.config import CONFIG
+except ConfigLoadingError as err:
+    logging.error(err)
+    sys.exit(1)
+
 import oslib
 from segmentation import (
     annotation,
@@ -35,7 +44,11 @@ def main(args):
                 oslib.clean_path(CONFIG.annotations.label_studio_path.parent)
                 oslib.clean_path(CONFIG.annotations.coco_annotations_path.parent)
                 oslib.clean_path(CONFIG.annotations.metadata_path)
-        annotations_path = segment.run(CONFIG)
+        try:
+            annotations_path = segment.run(CONFIG)
+        except ModelLoadingError as err:
+            logging.error(err)
+            return 1
         if not annotations_path:
             logging.info("No new images to segment")
 

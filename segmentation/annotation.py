@@ -53,7 +53,8 @@ class Keys(str, Enum):
     HEIGHT = "height"
     BBOX = "bbox"
     FILE_UPLOAD = "file_upload"
-    LICENSE = "licenses"
+    LICENSE = "license"
+    LICENSES = "licenses"
     DATE_CAPTURED = "date_captured"
 
 
@@ -363,7 +364,7 @@ class CocoImage:
     width: int
     height: int
     data_dir: StrPath
-    licenses: int = 1
+    license: int = 1
     date_captured: str = ""
     image: Optional[np.ndarray] = None
     annotations: List[SingleCocoAnnotation] = field(default_factory=list)
@@ -376,7 +377,7 @@ class CocoImage:
     def as_dict(self) -> dict:
         return {
             Keys.ID.value: self.id,
-            Keys.LICENSE.value: self.licenses,
+            Keys.LICENSE.value: self.license,
             Keys.FILE_NAME.value: self.file_name,
             Keys.WIDTH.value: self.width,
             Keys.HEIGHT.value: self.height,
@@ -510,7 +511,7 @@ class CocoAnnotation:
 
     def as_dict(self) -> Dict:
         return {
-            Keys.LICENSE.value: [l.__dict__ for l in self.licenses],
+            Keys.LICENSES.value: [l.__dict__ for l in self.licenses],
             Keys.CATEGORIES.value: [c.__dict__ for c in self.categories],
             Keys.ANNOTATIONS.value: [a.as_dict() for a in self.annotations],
             Keys.IMAGES.value: [i.as_dict() for i in self.images],

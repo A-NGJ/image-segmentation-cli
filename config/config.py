@@ -13,6 +13,8 @@ from uuid import uuid4
 
 import yaml
 
+from errors import ConfigLoadingError
+
 ROOT = Path(__file__).parent
 
 
@@ -106,11 +108,11 @@ class LabelStudioConfig(PathPostInitMixin):
 class AppConfig:
     grounding_dino: GroundingDinoConfig
     sam: SamConfig
-    logging_level: str
     ontology: OntologyConfig
     data: DataConfig
     annotations: AnnotationsConfig
     label_studio: LabelStudioConfig = field(default_factory=LabelStudioConfig)
+    logging_level: str = "INFO"
     checkpoint_step: int = 100
     run_id: str = ""
 
@@ -131,5 +133,8 @@ DEFAULT_CONFIG_PATH = ROOT / "config.yaml"
 
 config_path = Path(os.environ.get(CONFIG_PATH_ENV, DEFAULT_CONFIG_PATH))
 token = os.environ.get(TOKEN_ENV, "")
-CONFIG = AppConfig.from_yaml(config_path)
+try:
+    CONFIG = AppConfig.from_yaml(config_path)
+except TypeError as e:
+    raise ConfigLoadingError(f"Config file not loaded: {e}")
 CONFIG.label_studio.token = token

@@ -9,7 +9,6 @@
 3. [CLI](#cli)
 4. [Configuration File](#configuration-file)
 5. [Environmental Variables](#environmental-variables)
-6. [Fall dataset](#fall-dataset)
 7. [Dataset Python API](#dataset-python-api)
     - [Classes](#classes)
     - [API examples](#api-examples)
@@ -20,10 +19,27 @@
 
 ### Step 1: Install dependencies
 
+#### Install PyTorch
+
+GroundingDINO uses torch as dependency so it should be installed first.
+
+Follow [PyTorch installation guide](https://pytorch.org/). If you use CUDA, make sure that CUDA version is compatible with installed PyTorch version and `CUDA_HOME` environment variable is pointing to your CUDA directory. For Debian/Ubuntu, it is usally installed in the `/usr/local/cuda-x.y` directory.
+
+```bash
+export CUDA_HOME=/usr/local/cuda-x.y
+```
+
 #### Install Grounding DINO
 
 Follow the tutorial provided by Grounding DINO to install necessary dependencies:  
 [Grounding DINO tutorial](https://github.com/IDEA-Research/GroundingDINO).
+
+If you're getting the error message `Python.h: No such file or directory`, make sure that Python development headers are installed on your system. For Debian/Ubuntu, run
+
+```bash
+sudo apt-get update
+sudo apt-get install python3.x-dev
+```
 
 #### Install SAM
 
@@ -275,34 +291,6 @@ Path to the configuration file for the CLI tool. This file contains various sett
 **Required**: No (Specify to change the default configuration file)
 
 **Default value**: `config.yaml`
-
-## Fall dataset
-
-We release a fall dataset that was annotated using our image segmentation CLI. It consists of frames extracted from public fall datasets: [KULeuven](https://iiw.kuleuven.be/onderzoek/advise/datasets#High%20Quality%20Fall%20Simulation%20Data) [1], [UR Fall](http://fenix.ur.edu.pl/~mkepski/ds/uf.html) [2], and [CAUCAFall](https://data.mendeley.com/datasets/7w7fccy7ky/4) [3].
-
-:arrow_down: The dataset is available [here](). :arrow_down:
-
-| Name      | No. falls | % Falls | No. non-falls | % Non-falls | Total | % Total |
-|-----------|-----------|---------|---------------|-------------|-------|---------|
-| CAUCAFall | 1,538     | 67      | 1,575         | 41          | 3,113 | 51      |
-| KULeuven  | 713       | 31      | 1,950         | 51          | 2,663 | 44      |
-| URFall    | 42        | 2       | 275           | 8           | 317   | 5       |
-| **Total** | **2,293** | **100** | **3,800**     | **100**     | **6,093** | **100** |
-
-*Table: Comparative analysis of fall and non-fall data across subsets of the merged dataset. The table presents the number of fall (No. falls) and non-fall (No. non-falls) instances along with their respective percentage shares (% Falls and % Non-falls) for each dataset. "Total" columns refer to the combined count of fall and non-fall instances, whilst "Total" row refers to the sum of a respective column.*
-
-
-[1] Greet Baldewijns et al. “Bridging the gap between reallife data and simulated data
-by providing a highly realistic fall dataset for evaluating camerabased fall detection
-algorithms”. In: Healthcare Technology Letters 3.1 (2016), pp. 6–11. DOI: 10.1049/
-htl.2015.0047.
-
-[2] Bogdan Kwolek and Michal Kepski. “Human fall detection on embedded platform
-using depth maps and wireless accelerometer”. In: Computer Methods and Pro
-grams in Biomedicine 117.3 (Dec. 2014), pp. 489–501. ISSN: 01692607.
-
-[3] Jose Camilo Eraso et al. Dataset CAUCAFall. Version V4. 2022. DOI: 10.17632/
-7w7fccy7ky.4.
 
 ## Dataset Python API
 

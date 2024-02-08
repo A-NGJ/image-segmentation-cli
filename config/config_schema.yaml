@@ -18,7 +18,7 @@ annotations: # REQUIRED FOR: segment
   min_image_area_percentage: float # In range [0, 1], skip masks which relative area is less than specified percentage
   max_image_area_percentage: float # In range [0, 1], skip masks which relative area is greater than specified percentage
   approximation_percentage: float # In range [0, 1], the percentage of polygon points to be removed from the input polygon. Useful for simplyfying annotations.
-  root_path: str # root path to annotated dataset
+  root_path: str # root path to annotated dataset, all other paths in annotations are relative to this path
   coco_annotations_path: str # path for storing COCO JSON annotations. The specified JSON file name will be appended with run id.
   export_annotations_path: str # path for exported label studio annotations. REQUIRED FOR: parse-label-studio
   metadata_file: str # OPTIONAL. Default: metadata.json
