@@ -117,7 +117,7 @@ Use the following script to display segmentation masks and their color mapping f
 import matplotlib.pyplot as plt
 from segmentation.annotation import AnnotationMetadata
 
-metadata = AnnotationMetadata("./dataset", data_dir="raw_data/")
+metadata = AnnotationMetadata("./dataset", data_dir="./raw_data")
 sample_image = metadata.images[0]
 
 masked_image = sample_image.coco_image.draw_masks()

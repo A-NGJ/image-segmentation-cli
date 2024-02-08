@@ -109,10 +109,7 @@ class AnnotationMetadata:
         empty: bool = False,
     ):
         self.root_path = Path(root_path)
-        if not (data_dir.startswith("/") or data_dir.startswith(".")):
-            self.data_dir = self.root_path / data_dir
-        else:
-            self.data_dir = data_dir
+        self.data_dir = data_dir
         self.path = self.root_path / metadata_filename
 
         self._data: Dict = self._load(write_new) if not empty else {}
